@@ -2,6 +2,7 @@
   "name": "firebase-realtime",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://dominicserrano.com/simple-chat/",
   "dependencies": {
     "firebase": "^5.2.0",
     "react": "^16.4.1",
