@@ -84,7 +84,7 @@ class App extends Component {
                         (
                             <div>
                                 <button
-                                    className="btn btn-primary btn-sm"
+                                    className="btn btn-sm btn-primary"
                                     disabled={fetchingUsername}
                                     onClick={this.getNewUsername}>
                                     New Name
