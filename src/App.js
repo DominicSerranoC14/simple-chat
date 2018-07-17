@@ -8,7 +8,8 @@ import 'firebase/database';
 
 class App extends Component {
     state = {
-        user: null
+        user: null,
+        fetchingUsername: false
     };
 
     async componentDidMount() {
@@ -44,8 +45,7 @@ class App extends Component {
 
     checkAnonUserDisplayName = async () => {
         if (!this.state.user.displayName) {
-            const displayName = await this.getRandomUsername();
-            this.state.user.updateProfile({ displayName });
+            this.getNewUsername();
         }
     }
 
@@ -55,17 +55,46 @@ class App extends Component {
             return results[0] ? results[0].login.username : 'whoami';
         } catch (error) {
             console.error(error);
+            this.setState({ fetchingUsername: false });
         }
     }
 
+    getNewUsername = async () => {
+        this.setState({ fetchingUsername: true });
+
+        const displayName = await this.getRandomUsername();
+        await this.state.user.updateProfile({ displayName });
+
+        this.setState({
+            fetchingUsername: false,
+            user: firebase.auth().currentUser
+        });
+    }
+
     render() {
-        if (!this.state.user) return null;
+        const { fetchingUsername, user } = this.state;
+
+        if (!this.state.user) return <p>Loading...</p>;
 
         return (
             <div className="App">
                 <div className="header">
-                    <h2>Welcome To Slack</h2>
-                    {this.state.user && <p>username: {this.state.user.displayName}</p>}
+                    <h4>Welcome To Simple Chat</h4>
+                    {(user && user.displayName) &&
+                        (
+                            <div>
+                                <button
+                                    className="btn btn-primary btn-sm"
+                                    disabled={fetchingUsername}
+                                    onClick={this.getNewUsername}>
+                                    New Name
+                                    {fetchingUsername && <i className="fa fa-spinner fa-spin ml-2"></i>}
+                                </button>
+
+                                <p className="mt-2">username: {this.state.user.displayName}</p>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         );
