@@ -92,10 +92,7 @@ class App extends Component {
                     }
                 </div>
 
-                <div className="message-list-container">
-                    <MessageList />
-                    <div className="hidden scroll-to-div"></div>
-                </div>
+                <MessageList className="message-list-container" />
 
                 <div className="message-footer mb-4 mt-4">
                     {user && <MessageInput />}

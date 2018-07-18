@@ -63,7 +63,7 @@ class MessageInput extends Component {
                     className="btn btn-primary"
                     disabled={isPosting}
                     onClick={this.postMessage}>
-                    {!isPosting && <i className="fa fa-send mr-2"></i>}
+                    {!isPosting && <i className="fa fa-send"></i>}
                     {isPosting && <i className="fa fa-spinner fa-spin"></i>}
                 </button>
             </div>
