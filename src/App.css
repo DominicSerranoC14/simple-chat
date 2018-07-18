@@ -30,7 +30,16 @@ body,
     flex: 1 1 auto; 
     position: relative;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 5px 10px;
+}
+
+.App .message-list-container .own-message {
+    color: rgb(0, 0, 250);
+}
+
+.App .message-list-container .single-message .message-text {
+    word-break: break-all;
 }
 
 .App .message-footer {

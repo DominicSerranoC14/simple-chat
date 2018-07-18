@@ -94,6 +94,7 @@ class App extends Component {
 
                 <div className="message-list-container">
                     <MessageList />
+                    <div className="hidden scroll-to-div"></div>
                 </div>
 
                 <div className="message-footer mb-4 mt-4">

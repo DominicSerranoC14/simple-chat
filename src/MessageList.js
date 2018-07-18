@@ -24,10 +24,10 @@ class MessageList extends Component {
     render() {
         const { messages } = this.state;
 
-        if (!messages.length) return <p>Sorry, no messages!</p>
+        if (!messages.length) return <p>Sorry, no messages for you. Be the the first to send one!</p>
 
-        return messages.map((m, i) =>
-            <SingleMessage message={m} key={m.timestamp} index={i} />
+        return messages.map(m =>
+            <SingleMessage message={m} key={m.timestamp} />
         );
     }
 }
