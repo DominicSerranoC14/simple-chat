@@ -35,8 +35,8 @@ class MessageList extends Component {
                     <p>Sorry, no messages for you. Be the the first to send one!</p>
                 }
 
-                {messages.map(m =>
-                    <SingleMessage message={m} key={m.timestamp} />
+                {messages.map((m, i) =>
+                    <SingleMessage message={m} key={i} />
                 )}
 
                 <div className="hidden" ref={this.scrollToDiv}></div>
