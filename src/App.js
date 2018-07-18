@@ -4,7 +4,9 @@ import './App.css';
 import axios from 'axios';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import 'firebase/database';
+
+import MessageList from './MessageList';
+import MessageInput from './MessageInput';
 
 class App extends Component {
     state = {
@@ -29,7 +31,6 @@ class App extends Component {
         return firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.setState({ user });
-                this.setRealtimeListener();
                 this.checkAnonUserDisplayName();
             } else {
                 this.setState({ user: null });
@@ -37,15 +38,9 @@ class App extends Component {
         });
     }
 
-    setRealtimeListener = () => {
-        firebase.database().ref('counter').on('value', snapshot => {
-            this.setState({ counter: snapshot.val() });
-        });
-    }
-
     checkAnonUserDisplayName = async () => {
         if (!this.state.user.displayName) {
-            this.getNewUsername();
+            this.setNewUsername();
         }
     }
 
@@ -59,7 +54,7 @@ class App extends Component {
         }
     }
 
-    getNewUsername = async () => {
+    setNewUsername = async () => {
         this.setState({ fetchingUsername: true });
 
         const displayName = await this.getRandomUsername();
@@ -77,8 +72,8 @@ class App extends Component {
         if (!this.state.user) return <p>Loading...</p>;
 
         return (
-            <div className="App">
-                <div className="header">
+            <div className="container App">
+                <div className="message-header">
                     <h4>Welcome To Simple Chat</h4>
                     {(user && user.displayName) &&
                         (
@@ -86,7 +81,7 @@ class App extends Component {
                                 <button
                                     className="btn btn-sm btn-primary"
                                     disabled={fetchingUsername}
-                                    onClick={this.getNewUsername}>
+                                    onClick={this.setNewUsername}>
                                     New Name
                                     {fetchingUsername && <i className="fa fa-spinner fa-spin ml-2"></i>}
                                 </button>
@@ -95,6 +90,14 @@ class App extends Component {
                             </div>
                         )
                     }
+                </div>
+
+                <div className="message-list-container">
+                    <MessageList />
+                </div>
+
+                <div className="message-footer mb-4 mt-4">
+                    {user && <MessageInput />}
                 </div>
             </div>
         );

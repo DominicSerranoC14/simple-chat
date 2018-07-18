@@ -1,18 +1,38 @@
+html,
+body,
+#root,
 .App {
-  text-align: center;
+  height: 100%; 
+}
+
+.App {
+    display: flex;
+    flex-direction: column;
 }
 
 .App .fa {
     font-size: 12px;
 }
 
-.App .header {
+.App .message-header {
     display: flex;
+    flex: 0 0 auto;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    margin: 30px 0;
 }
 
-.App .header p {
+.App .message-header p {
     margin: 0;
+}
+
+.App .message-list-container {
+    flex: 1 1 auto; 
+    position: relative;
+    overflow-y: auto;
+    padding: 5px 10px;
+}
+
+.App .message-footer {
+    flex: 0 0 auto;
 }
