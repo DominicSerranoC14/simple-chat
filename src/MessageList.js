@@ -4,6 +4,7 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 
 import SingleMessage from './SingleMessage';
+import { determineCollection } from './services/realtime';
 
 class MessageList extends Component {
     state = {
@@ -17,7 +18,7 @@ class MessageList extends Component {
     }
 
     setRealtimeListener = () => {
-        firebase.database().ref('messages').on('value', snapshot => {
+        firebase.database().ref(determineCollection()).on('value', snapshot => {
             const messages = snapshot.val();
             this.setState({ messages: messages ? Object.values(messages) : [] });
             this.scrollToDiv.current.scrollIntoView({ behavior: 'smooth' });
@@ -28,10 +29,12 @@ class MessageList extends Component {
         const { messages } = this.state;
         const { className } = this.props;
 
-        if (!messages.length) return <p>Sorry, no messages for you. Be the the first to send one!</p>
-
         return (
             <div className={className ? className : ''}>
+                {!messages.length &&
+                    <p>Sorry, no messages for you. Be the the first to send one!</p>
+                }
+
                 {messages.map(m =>
                     <SingleMessage message={m} key={m.timestamp} />
                 )}

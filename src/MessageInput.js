@@ -4,6 +4,8 @@ import axios from 'axios';
 import firebase from 'firebase/app';
 import 'firebase/database';
 
+import { determineCollection } from './services/realtime';
+
 class MessageInput extends Component {
     state = {
         isPosting: false,
@@ -29,7 +31,7 @@ class MessageInput extends Component {
             this.setState({ isPosting: true });
 
             const token = await firebase.auth().currentUser.getIdToken();
-            await axios.post(`${process.env.REACT_APP_FB_DATABASE_URL}/messages.json?auth=${token}`, {
+            await axios.post(`${process.env.REACT_APP_FB_DATABASE_URL}/${determineCollection()}.json?auth=${token}`, {
                 author: firebase.auth().currentUser.displayName,
                 text: message,
                 timestamp: new Date(),
