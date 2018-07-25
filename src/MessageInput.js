@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import ToggleSwitch from 'react-toggle-switch';
 
 import firebase from 'firebase/app';
 import 'firebase/database';
+import _ from 'lodash';
 
 import { getTranslation } from './services/translate';
 import { determineCollection } from './services/realtime';
@@ -9,11 +11,33 @@ import { determineCollection } from './services/realtime';
 class MessageInput extends Component {
     state = {
         isPosting: false,
+        isTranslating: false,
         message: '',
+        showTranslator: false,
         translatedMessage: ''
     }
 
+    componentDidMount() {
+        this.translateDebounce = _.debounce(this.translate, 1000);
+    }
+
+    handleTranslateDebounce = () => {
+        this.setState({ isTranslating: true });
+        this.translateDebounce();
+    }
+
+    translate = async () => {
+        const data = await getTranslation({ lang: 'es', text: this.state.message });
+        const text = (data && data.text && data.text.length) ? data.text[0] : 'Whoops, try another phrase!';
+
+        this.setState({
+            isTranslating: false,
+            translatedMessage: text
+        });
+    };
+
     handleOnChange = ({ target }) => {
+        if (this.state.showTranslator) this.handleTranslateDebounce();
         this.setState({ [target.name]: target.value });
     }
 
@@ -23,6 +47,9 @@ class MessageInput extends Component {
         }
     }
 
+    toggleTranslator = () =>
+        this.setState(state => ({ showTranslator: !state.showTranslator }));
+
     handlePostMessage = async () => {
         const { message } = this.state;
         if (!message) return;
@@ -31,8 +58,7 @@ class MessageInput extends Component {
             this.setState({ isPosting: true });
             await this.postMessage();
 
-            this.setState({ message: '' });
-            this.setState({ isPosting: false });
+            this.setState({ isPosting: false, message: '', translatedMessage: '' });
         } catch (error) {
             console.error(error);
             this.setState({ isPosting: false });
@@ -51,49 +77,57 @@ class MessageInput extends Component {
         });
     };
 
-    translate = async () => {
-        const data = await getTranslation({ lang: 'es', text: this.state.message });
-        const text = data.text.length ? data.text[0] : '';
-        this.setState({ translatedMessage: text });
-    };
-
     render() {
-        const { isPosting, message, translatedMessage } = this.state;
+        const { isPosting, isTranslating, message, showTranslator, translatedMessage } = this.state;
 
         return (
-            <div>
-                <div className="d-flex">
-                    <input
-                        type="text"
-                        name="message"
-                        className="form-control"
-                        placeholder="Type here..."
-                        value={message}
-                        onChange={this.handleOnChange}
-                        onKeyUp={this.handleEnterKeypress}
-                    />
+            <div className="row d-flex align-items-center">
+                <div className="col-md-11">
+                    <div className="d-flex">
+                        <input
+                            type="text"
+                            name="message"
+                            className="form-control"
+                            placeholder="Type here..."
+                            value={message}
+                            onChange={this.handleOnChange}
+                            onKeyUp={this.handleEnterKeypress}
+                        />
 
-                    <button
-                        className="btn btn-primary"
-                        disabled={isPosting}
-                        onClick={this.handlePostMessage}>
-                        {!isPosting && <i className="fa fa-send"></i>}
-                        {isPosting && <i className="fa fa-spinner fa-spin"></i>}
-                    </button>
+                        <button
+                            title="Send Message"
+                            className="btn btn-primary"
+                            disabled={isPosting}
+                            onClick={this.handlePostMessage}>
+                            {!isPosting && <i className="fa fa-send"></i>}
+                            {isPosting && <i className="fa fa-spinner fa-spin"></i>}
+                        </button>
+                    </div>
+
+                    {showTranslator && <div className="d-flex mt-2">
+                        <input
+                            type="text"
+                            name="message"
+                            className="form-control"
+                            placeholder="Translation will go here!"
+                            value={translatedMessage}
+                            disabled={true} />
+
+                        <button
+                            title="Send Translation"
+                            className="btn btn-primary"
+                            onClick={this.translate}
+                            disabled={isTranslating}>
+                            {!isTranslating && <i className="fa fa-send"></i>}
+                            {isTranslating && <i className="fa fa-spinner fa-spin"></i>}
+                        </button>
+                    </div>}
                 </div>
 
-                <div className="d-flex mt-2">
-                    <input
-                        type="text"
-                        name="message"
-                        className="form-control"
-                        placeholder="Type here..."
-                        value={translatedMessage}
-                        disabled={true} />
-
-                    <button className="btn btn-primary" onClick={this.translate}>
-                        Translate
-                    </button>
+                <div className="col-md-1">
+                    <small>{showTranslator ? 'Hide' : 'Translate'}</small>
+                    <ToggleSwitch onClick={this.toggleTranslator} on={showTranslator}>
+                    </ToggleSwitch>
                 </div>
             </div>
         );

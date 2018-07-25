@@ -32,6 +32,13 @@ body,
     overflow-y: auto;
     overflow-x: hidden;
     padding: 5px 10px;
+    border-right: .5px;
+    border-left: .5px;
+    border-top: 0;
+    border-bottom: 0;
+    border-color: black;
+    border-style: solid;
+    border-block-start-color: red;
 }
 
 .App .message-list-container .own-message {
