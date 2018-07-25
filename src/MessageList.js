@@ -11,7 +11,7 @@ class MessageList extends Component {
         messages: []
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setRealtimeListener();
 
         this.scrollToDiv = React.createRef();
