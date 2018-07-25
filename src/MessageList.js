@@ -33,7 +33,7 @@ class MessageList extends Component {
         return (
             <div className={className ? className : ''}>
                 {!messages.length &&
-                    <p>Sorry, no messages for you. Be the the first to send one!</p>
+                    <p>Sorry, no messages for you. Be the first to send one!</p>
                 }
 
                 {messages.map((m, i) =>
