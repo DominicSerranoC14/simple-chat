@@ -58,12 +58,12 @@ class MessageInput extends Component {
     toggleTranslator = () =>
         this.setState(state => ({ showTranslator: !state.showTranslator }));
 
-    handlePostMessage = async (message) => {
-        if (!message || message.length > 100) return;
+    handlePostMessage = async () => {
+        if (!this.state.message || this.state.message.length > 100) return;
 
         try {
             this.setState({ isPosting: true });
-            await this.postMessage(message);
+            await this.postMessage();
 
             this.setState({ isPosting: false, message: '', translatedMessage: '' });
         } catch (error) {
@@ -72,12 +72,15 @@ class MessageInput extends Component {
         }
     }
 
-    postMessage = (message) => {
+    postMessage = () => {
+        const { message, translatedMessage, translateToLanguage } = this.state;
         const newPostKey = firebase.database().ref().child(determineCollection()).push().key;
         firebase.database().ref(determineCollection()).update({
             [newPostKey]: {
                 author: firebase.auth().currentUser.displayName,
                 text: message,
+                translatedLanguage: translateToLanguage.label,
+                translatedText: translatedMessage,
                 timestamp: new Date(),
                 uid: firebase.auth().currentUser.uid
             }
@@ -105,7 +108,7 @@ class MessageInput extends Component {
                             title="Send Message"
                             className="btn btn-primary"
                             disabled={isPosting}
-                            onClick={() => this.handlePostMessage(message)}>
+                            onClick={this.handlePostMessage}>
                             {!isPosting && <i className="fa fa-send"></i>}
                             {isPosting && <i className="fa fa-spinner fa-spin"></i>}
                         </button>
@@ -135,7 +138,7 @@ class MessageInput extends Component {
                                 <button
                                     title="Send Translation"
                                     className="btn btn-primary"
-                                    onClick={() => this.handlePostMessage(translatedMessage)}
+                                    onClick={this.handlePostMessage}
                                     disabled={isTranslating}>
                                     {!isTranslating && <i className="fa fa-send"></i>}
                                     {isTranslating && <i className="fa fa-spinner fa-spin"></i>}

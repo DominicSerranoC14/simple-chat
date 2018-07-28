@@ -18,8 +18,7 @@ class MessageList extends Component {
     }
 
     setRealtimeListener = () => {
-        const ref = firebase.database().ref(determineCollection()).orderByChild('count');
-        ref.on('value', snapshot => {
+        firebase.database().ref(determineCollection()).on('value', snapshot => {
             const messages = snapshot.val();
             this.setState({ messages: messages ? Object.values(messages) : [] });
             this.scrollToDiv.current.scrollIntoView({ behavior: 'smooth' });

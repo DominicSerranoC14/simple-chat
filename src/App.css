@@ -49,6 +49,11 @@ body,
     word-break: break-all;
 }
 
+.App .message-list-container .single-message .show-original:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .App .message-footer {
     flex: 0 0 auto;
 }
