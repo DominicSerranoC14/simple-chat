@@ -13,7 +13,6 @@ class SingleMessage extends Component {
 
     toggleShowOriginal = () => {
         this.setState(state => ({ showOriginalText: !state.showOriginalText }));
-        // this.setState({ showOriginalText: !this.state.showOriginalText });
     };
 
     render() {
@@ -44,7 +43,7 @@ class SingleMessage extends Component {
 
                 <div className={`d-flex ${alignMessage(uid)}`}>
                     <small className="m-0 mr-2"><strong>{author}</strong></small>
-                    <small>{moment(timestamp).format('hh:mm a')}</small>
+                    <small>{moment(timestamp).format('hh:mm a MMM DD')}</small>
                 </div>
             </div>
         )
